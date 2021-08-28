@@ -4,6 +4,7 @@ Wiki service with k8s. (feat. blockchain)
 Develop with [LibertyEngine](https://github.com/librewiki/liberty-engine).
 
 ## Build
+root로 빌드 진행.
 ```bash
 # install dependencies
 sudo apt update
