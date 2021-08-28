@@ -1,5 +1,8 @@
 # K2L2
-Wiki service with k8s. (feat. blockchain)
+Wiki service with k8s. (feat. blockchain)  
+  
+Develop with [LibertyEngine](https://github.com/librewiki/liberty-engine).
+
 ## Build
 ```bash
 # install dependencies
