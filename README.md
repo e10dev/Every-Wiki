@@ -58,3 +58,8 @@ root@ubuntu:~#
 npm start
 ```
 
+## When Mroonga related error occurs
+```bash
+sudo mysql
+mysql> INSTALL SONAME 'ha_mroonga';
+```
