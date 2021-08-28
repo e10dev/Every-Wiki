@@ -50,7 +50,7 @@ Do you want to move this to the /etc/nginx/sites-available and /etc/nginx/sites-
 ? Are you interested in participating? (Y/n) Y
 .......
 ℹ Ready to run nuxt start                                             00:33:46
-root@ubuntu:~#
+test@ubuntu:~/liberty-engine$
 ```
   
 ## Run
