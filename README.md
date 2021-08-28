@@ -11,7 +11,7 @@ root로 빌드 진행.
 ```bash
 # install dependencies
 apt update
-apt install -y vim && sudo apt install net-tools
+apt install -y vim && apt install -y net-tools
 apt install -y mariadb-server
 apt install -y mariadb-plugin-mroonga
 apt install -y nginx
