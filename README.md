@@ -7,14 +7,14 @@ Develop with [LibertyEngine](https://github.com/librewiki/liberty-engine).
 root로 빌드 진행.
 ```bash
 # install dependencies
-sudo apt update
-sudo apt install -y vim && sudo apt install net-tools
-sudo apt install -y mariadb-server
-sudo apt install -y mariadb-plugin-mroonga
-sudo apt install -y nginx
-sudo apt install -y curl && sudo apt install -y git
+apt update
+apt install -y vim && sudo apt install net-tools
+apt install -y mariadb-server
+apt install -y mariadb-plugin-mroonga
+apt install -y nginx
+apt install -y curl && apt install -y git
 curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
-sudo apt install -y nodejs
+apt install -y nodejs
 
 # install LibertyEngine
 git clone https://github.com/librewiki/liberty-engine.git
