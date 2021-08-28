@@ -1,7 +1,7 @@
 # K2L2
 Wiki service with k8s. (feat. blockchain)
 ## Build
-```
+```bash
 # install dependencies
 sudo apt update
 sudo apt install -y mariadb-server
@@ -15,4 +15,4 @@ git clone https://github.com/librewiki/liberty-engine.git
 cd liberty-engine
 npm i
 npm run setup
-```bash
+```
