@@ -1,7 +1,10 @@
 # Every Wiki
 Wiki service with k8s. (feat. blockchain)  
   
-Develop with [LibertyEngine](https://github.com/librewiki/liberty-engine).
+Develop with [LibertyEngine](https://github.com/librewiki/liberty-engine).  
+  
+## Requirements
+Linux: Ubuntu 18.04.5 LTS (Bionic Beaver)
 
 ## Build
 root로 빌드 진행.
