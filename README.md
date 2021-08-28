@@ -1,4 +1,4 @@
-# K2L2
+# Every Wiki
 Wiki service with k8s. (feat. blockchain)  
   
 Develop with [LibertyEngine](https://github.com/librewiki/liberty-engine).
