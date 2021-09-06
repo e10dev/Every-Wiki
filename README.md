@@ -4,11 +4,11 @@ Wiki service with k8s. (feat. blockchain)
 Develop with [LibertyEngine](https://github.com/librewiki/liberty-engine).  
   
 ## Requirements
-Linux: Ubuntu 18.04.5 LTS (Bionic Beaver)  
-FrontEnd: Vue.js  
-BackEnd: Express.js, Nginx (Reverse Proxy)  
-DataBase: Maria DB (with mroonga)  
-Tools: Nuxt.js, pm2  
+* Linux: Ubuntu 18.04.5 LTS (Bionic Beaver)  
+* FrontEnd: Vue.js  
+* BackEnd: Express.js, Nginx (Reverse Proxy)  
+* DataBase: Maria DB (with mroonga)  
+* Tools: Nuxt.js, pm2  
 
 ## Build
 root로 빌드 시 media부분에서 403 Error 발생. -> 일반 사용자로 설치 진행.
