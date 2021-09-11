@@ -26,8 +26,8 @@ sudo apt install -y nodejs
 # install LibertyEngine
 git clone https://github.com/librewiki/liberty-engine.git
 cd liberty-engine
-sudo npm i
-sudo npm run setup
+npm i
+npm run setup
 ```
   
 ## Settings
@@ -57,11 +57,36 @@ Do you want to move this to the /etc/nginx/sites-available and /etc/nginx/sites-
 test@ubuntu:~/liberty-engine$
 ```
   
+## nginx Settings
+```bash
+# cd /etc/nginx/sites-available
+# mv default default.bak
+# vi /etc/nginx/sites-available/localhost
+
+server {
+...
+
+  server_name 192.168.13.101 <- Your IP
+
+...
+}
+```
+`:w /etc/nginx/sites-available/default` 로 저장  
+  
 ## Run
 ```bash
 npm start
 ```
 
+  
+  
+## WSL service start (if not started)
+```bash
+sudo service nginx start
+sudo service mysql start
+```
+  
+  
 ## When Mroonga related error occurs
 ```bash
 sudo mysql
