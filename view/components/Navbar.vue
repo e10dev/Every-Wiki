@@ -7,7 +7,7 @@ nav.liberty-navbar.navbar
           | {{ settings.data.wikiName }}
         nuxt-link.navbar-item(active-class="" to="/recent-changes")
           b-icon(icon="refresh")
-          span.navbar-text 최근바뀜
+          span.navbar-text 최근문서
         nuxt-link.navbar-item(active-class="" to="/random")
           b-icon(icon="random")
           span.navbar-text 랜덤문서
