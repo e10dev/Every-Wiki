@@ -66,7 +66,7 @@ test@ubuntu:~/liberty-engine$
 server {
 ...
 
-  server_name 192.168.13.101 <- Your IP
+  server_name 192.168.13.101 <- Your IP or Domain
 
 ...
 }
