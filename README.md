@@ -48,13 +48,13 @@ User/DB setup is complete.
 ? Wiki admin password [hidden] <- Web admin password
 ? Wiki front page main <- Main page name
 ...
-? Nginx config has been created on /root/liberty-engine/bin/localhost.
+? Nginx config has been created on /root/Every-Wiki/bin/localhost.
 Do you want to move this to the /etc/nginx/sites-available and /etc/nginx/sites-enabled ? (sudo) (Y/n) Y
 .......
 ? Are you interested in participating? (Y/n) Y
 .......
 ℹ Ready to run nuxt start                                             00:33:46
-test@ubuntu:~/liberty-engine$
+test@ubuntu:~/Every-Wiki$
 ```
   
 ## nginx Settings
