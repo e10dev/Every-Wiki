@@ -36,17 +36,17 @@ npm run setup
 ? Do you want to create new database? (sudo) Yes
 ? Do you want to create mysql user? (sudo) Yes
 ? Do you want to grant privileges on mysql user? (sudo) Yes
-? database name wikidb <- Database name
-? database username dbuser <- DB username
-? database password [hidden] <- DB password
+? database name wikidb             <- Database name
+? database username dbuser         <- DB username
+? database password [hidden]       <- DB password
 User/DB setup is complete.
-? the name of wiki testwiki <- Wiki name
+? the name of wiki testwiki        <- Wiki name
 ? Wiki server domain name (e.g., www.wiki.com) localhost
 ? Port of the *internal* api server 3001
 ? Port of the *internal* view server 3000
-? Wiki admin username wikiadm <- Web admin username
-? Wiki admin password [hidden] <- Web admin password
-? Wiki front page main <- Main page name
+? Wiki admin username wikiadm      <- Web admin username
+? Wiki admin password [hidden]     <- Web admin password
+? Wiki front page main             <- Main page name
 ...
 ? Nginx config has been created on /root/Every-Wiki/bin/localhost.
 Do you want to move this to the /etc/nginx/sites-available and /etc/nginx/sites-enabled ? (sudo) (Y/n) Y
