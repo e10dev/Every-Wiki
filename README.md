@@ -24,8 +24,8 @@ curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
 sudo apt install -y nodejs
 
 # install LibertyEngine
-git clone https://github.com/librewiki/liberty-engine.git
-cd liberty-engine
+git clone https://github.com/e10dev/Every-Wiki.git
+cd Every-Wiki
 npm i
 npm run setup
 ```
