@@ -1,0 +1,55 @@
+** 코드 역할 분석
+<assete>
+style-variables.scss - 전체적인 프론트 색조정
+
+<components>
+AdminMenu.vue - 관리자 도구
+BlockNotice.vue - 아이피 및 사용자 차단 안내
+CategoryTree.vue - 하위 분류 (분류에 속하는 문서)
+DiscussionCommentCard.vue - 
+LibertyFooter.vue - 
+LiveRecent.vue - 
+Navbar.vue - 
+SiteNotice.vue - 
+ToolBox.vue - 
+WikiHtml.vue - 
+
+<layouts>
+default.vue - 
+error.vue - 에러 발생
+
+<pages-admin>
+extensionName.vue - 
+email.vue - (관리자 페이지) 이메일 설정
+general.vue - (관리자 페이지) 일반 설정
+grant.vue - (관리자 페이지) 사용자 역할 부여/해제
+ip-block.vue - (관리자 페이지) 아이피 차단
+ip-unblock.vue - (관리자 페이지) 아이피 차단 해제
+role.vue - (관리자 페이지) 역할 관리
+statistics.vue - (관리자 페이지) 통계
+user-block.vue - (관리자 페이지) 사용자 차단
+user-unblock.vue - (관리자 페이지) 사용자 차단 해제
+
+<pages>
+article - 
+backlinks - 
+delete - 문서 삭제
+diff - 
+discussion - 
+edit - 
+go - 
+history - 
+permission - 문서 권한 부여
+redirections -  
+rename - 문서명 변경
+search - 문서 검색
+topics - 토의
+admin.vue - 관리자
+index.vue - 
+login.vue - 로그인 
+random.vue - 
+recent-changes.vue - 최근 바뀜
+singup-success.vue - 회원가입 성공
+singup.vue - 회원가입
+upload.vue - 파일 업로드
+user-settings.vue - 비밀번호 변경
