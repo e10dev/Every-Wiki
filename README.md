@@ -60,8 +60,8 @@ test@ubuntu:~/Every-Wiki$
 ## nginx Settings
 ```bash
 # cd /etc/nginx/sites-available
-# mv default default.bak
-# vi /etc/nginx/sites-available/localhost
+# sudo mv default default.bak
+# sudo vi /etc/nginx/sites-available/localhost
 
 server {
 ...
