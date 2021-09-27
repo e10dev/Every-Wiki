@@ -38,3 +38,5 @@ Event bus : 상위 - 하위 관계가 아닌 컴포넌트 간의 통신을 위�
 --> b-nav-form : 인라인 양식 컨트롤을 탐색 모음에 배치하는데 사용
   ex) b-input-group prepend="원하는 이름"
        b-form-input placeholder="username"
+
+test1 
