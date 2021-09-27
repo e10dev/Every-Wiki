@@ -72,10 +72,11 @@ server {
 }
 
 # :w /etc/nginx/sites-available/default
+# :q!
 ```
 <br/>
 
-`systemctl nginx restart` -> nginx 재시작
+`systemctl restart nginx` -> nginx 재시작
   
 ## Run
 ```bash
