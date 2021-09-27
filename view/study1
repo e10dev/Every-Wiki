@@ -1,0 +1,40 @@
+2021.09.22
+Vue 기초공부 (login.vue 부분보면서)
+
+Vue lnstance :  vue.js로 화면을 개발하기 위해 꼭 생성해야 하는 필수 단위
+->  new Vue({ option }): 
+-->option ( 
+
+data: {},    변수를 저장할때 사용
+
+computed: {},  data에 저장된 변수를 이용하여 Reactive하게 변경되는 함수 작성시 사용
+
+methods: {}, 사용할 함수를 저장
+
+created(){}, 인스턴스가 생성되었을때 호출되는 함수
+
+mounted(){} 이 인스턴스가 DOM에 Mount 완료되었을때 호출되는 함수
+
+)
+
+Vue components : 화면의 영역을 일정한 단위로 쪼개어 재활용 가능한 형태로 관리하는 것 
+-> props : 상위 컴포넌트에서 하위 컴포넌트로 내리는 데이터 속성 
+--> child > parent > children 
+
+Event bus : 상위 - 하위 관계가 아닌 컴포넌트 간의 통신을 위해 enent bus 를 활용
+-> how to : 새로운 뷰 인스턴트를 생성 
+--> var eventBus = new Vue();
+     new Vue({});
+--->호출 : $emit() / 수신 : $on() 
+
+*template :  각 *vue파일은 한번에 최대 하나의 <template> 블록을 포함
+-> 내용은 문자열로 추출되어 컴파일 된 vue components의 template옵션으로 사용
+--> template lang ="pug"로 사용
+---> 비슷한 유형 : style lang="scss"로 사용
+
+*navbar.vue 
+-> b-dropdown :  링크 및 작업 목록을 드롭다운 메뉴형식으로 표시하기 위한 토글 가능한 상황별 오버레이
+-- dropleftright prop : ture 로 설정하여 왼쪽 들보 메뉴로 전환 
+--> b-nav-form : 인라인 양식 컨트롤을 탐색 모음에 배치하는데 사용
+  ex) b-input-group prepend="원하는 이름"
+       b-form-input placeholder="username"
