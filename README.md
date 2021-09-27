@@ -76,7 +76,7 @@ server {
 ```
 <br/>
 
-`systemctl restart nginx` -> nginx 재시작
+`sudo systemctl restart nginx` -> nginx 재시작
   
 ## Run
 ```bash
