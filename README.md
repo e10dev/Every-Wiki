@@ -72,6 +72,7 @@ server {
 }
 ```
 `:w /etc/nginx/sites-available/default` 로 저장  
+`systemctl nginx restart` nginx 재시작
   
 ## Run
 ```bash
