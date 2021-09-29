@@ -8,6 +8,7 @@ Develop with [LibertyEngine](https://github.com/librewiki/liberty-engine).
 * FrontEnd: Vue.js  
 * BackEnd: Express.js, Nginx (Reverse Proxy)  
 * DataBase: Maria DB (with mroonga)  
+  * Mroonga storage engine for fulltext search. `sudo apt install mariadb-plugin-mroonga`  
 * Tools: Nuxt.js, pm2  
 
 ## Build
