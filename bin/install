@@ -17,111 +17,51 @@ const rootPath = path.join(__dirname, '..');
 const configPath = path.join(__dirname, '..', 'config', 'config.json');
 const mediaFilePath = path.join(__dirname, '..', 'media');
 
+
 const colors = require('colors/safe');
 
 (async () => {
   try {
-    if (existsSync(configPath)) {
-      const answers = await inquirer.prompt([
-        {
-          type: 'confirm',
-          name: 'clear',
-          message: 'config.json is found. Do you want to clear the data of your wiki?',
-          default: false,
-        },
-      ]);
-      if (!answers.clear) {
-        return;
-      }
-    }
-    const { createDbUser, createDatabase, grantDbUser } = await inquirer.prompt([
-      {
-        type: 'confirm',
-        name: 'createDatabase',
-        message: 'Do you want to create new database? (sudo)',
-        default: true,
-      },
-      {
-        type: 'confirm',
-        name: 'createDbUser',
-        message: 'Do you want to create mysql user? (sudo)',
-        default: true,
-      },
-      {
-        type: 'confirm',
-        name: 'grantDbUser',
-        message: 'Do you want to grant privileges on mysql user? (sudo)',
-        default: true,
-      },
-    ]);
-    const { dbName, dbUsername, dbPassword } = await inquirer.prompt([
-      {
-        type: 'input',
-        name: 'dbName',
-        message: 'database name',
-      },
-      {
-        type: 'input',
-        name: 'dbUsername',
-        message: 'database username',
-      },
-      {
-        type: 'password',
-        name: 'dbPassword',
-        message: 'database password',
-      },
-    ]);
+    const installConfig = readFileSync(path.join(__dirname, 'install-templates/', 'installConfig.json'), 'utf8');
+    const installConfigJSON = JSON.parse(installConfig);    
+
+    const { createDbUser, createDatabase, grantDbUser } = {
+      createDbUser: installConfigJSON.createDbUser,
+      createDatabase: installConfigJSON.createDatabase,
+      grantDbUser: installConfigJSON.grantDbUser,
+    };
+    const { dbHost, dbHostUserName, dbHostPassword, dbName, dbUserName, dbPassword } = {
+      dbHost: installConfigJSON.dbHost,
+      dbHostUserName: installConfigJSON.dbHostUserName,
+      dbHostPassword: installConfigJSON.dbHostPassword,
+      dbName: installConfigJSON.dbName,
+      dbUserName: installConfigJSON.dbUserName,
+      dbPassword: installConfigJSON.dbPassword,
+    };
     if (createDatabase) {
-      execSync(`sudo mysql -e "create database ${dbName};"`);
+      if (dbHost == 'localhost') {
+        execSync(`sudo mysql -e "create database if not exists ${dbName};"`);
+      } else {
+        execSync(`sudo mysql -h${dbHost} -u${dbHostUserName} -p'${dbHostPassword}' -e "create database if not exists ${dbName};"`);
+      } 
     }
     if (createDbUser) {
-      execSync(`sudo mysql -e "create user '${dbUsername}'@'localhost' identified by '${dbPassword}';"`);
+      if (dbHost == 'localhost') {
+        execSync(`sudo mysql -e "create user if net exists '${dbUserName}'@'localhost' identified by '${dbPassword}';"`);
+      } else {
+        execSync(`sudo mysql -h${dbHost} -u${dbHostUserName} -p'${dbHostPassword}' -e "create user if not exists'${dbUserName}'@'%' identified by '${dbPassword}';"`);
+      }
     }
     if (grantDbUser) {
-      execSync(`sudo mysql -e "grant all privileges on ${dbName}.* to '${dbUsername}'@'localhost';"`);
-      execSync('sudo mysql -e "flush privileges;"');
+      if (dbHost == 'localhost') {
+        execSync(`sudo mysql -e "grant all privileges on ${dbName}.* to '${dbUserName}'@'localhost';"`);
+        execSync('sudo mysql -e "flush privileges;"');
+      } else {
+        execSync(`sudo mysql -h${dbHost} -u${dbHostUserName} -p'${dbHostPassword}' -e "grant all privileges on ${dbName}.* to '${dbUserName}'@'%';"`);
+        execSync(`sudo mysql -h${dbHost} -u${dbHostUserName} -p'${dbHostPassword}' -e "flush privileges;"`);
+      }
     }
     console.log(colors.green('User/DB setup is complete.'));
-    const answers = await inquirer.prompt([
-      {
-        type: 'input',
-        name: 'wikiName',
-        message: 'the name of wiki',
-      },
-      {
-        type: 'input',
-        name: 'wikiDomain',
-        message: 'Wiki server domain name (e.g., www.wiki.com)',
-        default: 'localhost',
-      },
-      {
-        type: 'input',
-        name: 'apiPort',
-        message: 'Port of the *internal* api server',
-        default: '3001',
-      },
-      {
-        type: 'input',
-        name: 'viewPort',
-        message: 'Port of the *internal* view server',
-        default: '3000',
-      },
-      {
-        type: 'input',
-        name: 'adminUsername',
-        message: 'Wiki admin username',
-      },
-      {
-        type: 'password',
-        name: 'adminPassword',
-        message: 'Wiki admin password',
-      },
-      {
-        type: 'input',
-        name: 'frontPageName',
-        message: 'Wiki front page',
-      },
-    ]);
     const secret = (await randomBytesAsync(48))
       .toString('base64')
       .replace(/\+/g, '-')
@@ -131,10 +71,10 @@ const colors = require('colors/safe');
       production: {
         secret,
         db: {
-          username: dbUsername,
-          password: dbPassword,
+          username: createDbUser === true || grantDbUser === true ? dbUserName : dbHostUserName,
+          password: createDbUser === true || grantDbUser === true ? dbPassword: dbHostPassword,
           database: dbName,
-          host: 'localhost',
+          host: dbHost,
           port: '3306',
           dialect: 'mysql',
           charset: 'utf8mb4',
@@ -148,10 +88,10 @@ const colors = require('colors/safe');
       development: {
         secret,
         db: {
-          username: dbUsername,
-          password: dbPassword,
+          username: createDbUser === true ? dbUserName : dbHostUserName,
+          password: createDbUser === true ? dbPassword: dbHostPassword,
           database: dbName,
-          host: 'localhost',
+          host: dbHost,
           port: '3306',
           dialect: 'mysql',
           charset: 'utf8mb4',
@@ -164,14 +104,14 @@ const colors = require('colors/safe');
       },
     };
     const configJSON = JSON.stringify(config, null, 2);
-    writeFileSync(configPath, configJSON);
-    const models = require('../lib/models');
+    await writeFileSync(configPath, configJSON);
+    const models = await require('../lib/models');
     await models.install({
-      wikiName: answers.wikiName,
-      domain: answers.wikiDomain,
-      adminUsername: answers.adminUsername,
-      adminPassword: answers.adminPassword,
-      frontPageName: answers.frontPageName,
+      wikiName: installConfigJSON.wikiName,
+      domain: installConfigJSON.wikiDomain,
+      adminUsername: installConfigJSON.adminUsername,
+      adminPassword: installConfigJSON.adminPassword,
+      frontPageName: installConfigJSON.frontPageName,
     });
     await models.sequelize.query(`
       ALTER TABLE articleSearch
@@ -207,30 +147,22 @@ const colors = require('colors/safe');
       });
     const ecosystemTemplate = readFileSync(path.join(__dirname, 'install-templates', 'ecosystem.config.js.template'), 'utf8');
     const ecosystemConfig = ecosystemTemplate
-      .replace(/\{\{api_port\}\}/g, answers.apiPort)
-      .replace(/\{\{view_port\}\}/g, answers.viewPort);
+      .replace(/\{\{api_port\}\}/g, installConfigJSON.apiPort)
+      .replace(/\{\{view_port\}\}/g, installConfigJSON.viewPort);
     writeFileSync(path.join(rootPath, 'ecosystem.config.js'), ecosystemConfig);
     const nginxTemplate = readFileSync(path.join(__dirname, 'install-templates', 'nginx.template'), 'utf8');
     const nginxConfig = nginxTemplate
-      .replace(/\{\{server_name\}\}/g, answers.wikiDomain)
+      .replace(/\{\{server_name\}\}/g, installConfigJSON.wikiDomain)
       .replace(/\{\{root_path\}\}/g, path.join(__dirname, '..'))
-      .replace(/\{\{api_port\}\}/g, answers.apiPort)
-      .replace(/\{\{view_port\}\}/g, answers.viewPort);
-    const tempPath = path.join(__dirname, answers.wikiDomain);
+      .replace(/\{\{api_port\}\}/g, installConfigJSON.apiPort)
+      .replace(/\{\{view_port\}\}/g, installConfigJSON.viewPort);
+    const tempPath = path.join(__dirname, installConfigJSON.wikiDomain);
     if (existsSync(tempPath)) unlinkSync(tempPath);
     writeFileSync(tempPath, nginxConfig);
-    const { nginxMoveCopy } = await inquirer.prompt([
-      {
-        type: 'confirm',
-        name: 'nginxMoveCopy',
-        message: `Nginx config has been created on ${tempPath}.
-Do you want to move this to the /etc/nginx/sites-available and /etc/nginx/sites-enabled ? (sudo)`,
-        default: true,
-      },
-    ]);
+    const { nginxMoveCopy } = installConfigJSON.nginxMoveCopy;
     if (nginxMoveCopy) {
-      execSync(`sudo rm -f /etc/nginx/sites-available/${answers.wikiDomain} && sudo rm -f /etc/nginx/sites-enabled/${answers.wikiDomain}`);
-      execSync(`sudo mv ${tempPath} /etc/nginx/sites-available && sudo ln -s /etc/nginx/sites-available/${answers.wikiDomain} /etc/nginx/sites-enabled/${answers.wikiDomain}`);
+      execSync(`sudo rm -f /etc/nginx/sites-available/${installConfigJSON.wikiDomain} && sudo rm -f /etc/nginx/sites-enabled/${installConfigJSON.wikiDomain}`);
+      execSync(`sudo mv ${tempPath} /etc/nginx/sites-available && sudo ln -s /etc/nginx/sites-available/${installConfigJSON.wikiDomain} /etc/nginx/sites-enabled/${installConfigJSON.wikiDomain}`);
       execSync('sudo service nginx reload');
     }
     console.log(colors.green('done'));
