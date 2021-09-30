@@ -3,12 +3,13 @@ Wiki service with k8s. (feat. blockchain)
   
 Develop with [LibertyEngine](https://github.com/librewiki/liberty-engine).  
   
+## Table of Contents
 - [Requirements](#requirements)
 - [Build](#build)
   * [main.yaml](#mainyaml)
   * [db.yaml](#dbyaml)
   * [secret.yaml](#secretyaml)
-- [Run & Dev](#run---dev)
+- [Run & Dev]
   * [Run](#run)
   * [Dev](#dev)
   
