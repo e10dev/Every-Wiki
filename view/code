@@ -3,16 +3,16 @@
 style-variables.scss - 전체적인 프론트 색조정
 
 <components>
-AdminMenu.vue - 관리자 도구
+AdminMenu.vue - 관리자 페이지
 BlockNotice.vue - 아이피 및 사용자 차단 안내
 CategoryTree.vue - 하위 분류 (분류에 속하는 문서)
-DiscussionCommentCard.vue - 
+DiscussionCommentCard.vue - 코멘트관리
 LibertyFooter.vue - 이건 아직 모르겠음
-LiveRecent.vue - 
-Navbar.vue - 
-SiteNotice.vue - 
-ToolBox.vue - 
-WikiHtml.vue - 
+LiveRecent.vue - 옆 메뉴바 (최근바뀜, 최근토의)
+Navbar.vue - 상단 메뉴바
+SiteNotice.vue - 공지문
+ToolBox.vue - 문서 메뉴바
+WikiHtml.vue - 메인페이지 구성도
 
 <layouts>
 default.vue - 
@@ -31,16 +31,16 @@ user-block.vue - (관리자 페이지) 사용자 차단
 user-unblock.vue - (관리자 페이지) 사용자 차단 해제
 
 <pages>
-article - 
-backlinks - 
+article - 분류
+backlinks - 문서를 가르키는 문서
 delete - 문서 삭제
-diff - 
-discussion - 
-edit - 
+diff - 두판 차이 보기
+discussion - 새 댓글
+edit - 편집
 go - 
-history - 
+history - 비교
 permission - 문서 권한 부여
-redirections -  
+redirections -  문서로 넘겨주기
 rename - 문서명 변경
 search - 문서 검색
 topics - 토의
