@@ -1,0 +1,265 @@
+#!/usr/bin/env node
+
+'use strict';
+
+const {
+  existsSync, writeFileSync, readdirSync, renameSync, unlinkSync, readFileSync,
+} = require('fs');
+const path = require('path');
+const crypto = require('crypto');
+const { promisify } = require('util');
+const inquirer = require('inquirer');
+const { execSync } = require('child_process');
+
+const randomBytesAsync = promisify(crypto.randomBytes);
+
+const rootPath = path.join(__dirname, '..');
+const configPath = path.join(__dirname, '..', 'config', 'config.json');
+const mediaFilePath = path.join(__dirname, '..', 'media');
+
+const colors = require('colors/safe');
+
+(async () => {
+  try {
+    if (existsSync(configPath)) {
+      const answers = await inquirer.prompt([
+        {
+          type: 'confirm',
+          name: 'clear',
+          message: 'config.json is found. Do you want to clear the data of your wiki?',
+          default: false,
+        },
+      ]);
+      if (!answers.clear) {
+        return;
+      }
+    }
+    const { createDbUser, createDatabase, grantDbUser } = await inquirer.prompt([
+      {
+        type: 'confirm',
+        name: 'createDatabase',
+        message: 'Do you want to create new database? (sudo)',
+        default: true,
+      },
+      {
+        type: 'confirm',
+        name: 'createDbUser',
+        message: 'Do you want to create mysql user? (sudo)',
+        default: true,
+      },
+      {
+        type: 'confirm',
+        name: 'grantDbUser',
+        message: 'Do you want to grant privileges on mysql user? (sudo)',
+        default: true,
+      },
+    ]);
+    const { dbHost, dbHostPassword, dbName, dbUsername, dbPassword } = await inquirer.prompt([
+      {
+        type: 'input',
+        name: 'dbHost',
+        message: 'database host',
+      },
+      {
+        type: 'password',
+        name: 'dbHostPassword',
+        message: 'database host password',
+      },
+      {
+        type: 'input',
+        name: 'dbName',
+        message: 'database name',
+      },
+      {
+        type: 'input',
+        name: 'dbUsername',
+        message: 'database username',
+      },
+      {
+        type: 'password',
+        name: 'dbPassword',
+        message: 'database password',
+      },
+    ]);
+    if (createDatabase) {
+      if (dbHost == 'localhost') {
+        execSync(`sudo mysql -e "create database ${dbName};"`);
+      } else {
+        execSync(`sudo mysql -h${dbHost} -p'${dbHostPassword}' -e "create database ${dbName};"`);
+      } 
+    }
+    if (createDbUser) {
+      if (dbHost == 'localhost') {
+        execSync(`sudo mysql -e "create user '${dbUsername}'@'localhost' identified by '${dbPassword}';"`);
+      } else {
+        execSync(`sudo mysql -h${dbHost} -p'${dbHostPassword}' -e "create user '${dbUsername}'@'%' identified by '${dbPassword}';"`);
+      }
+    }
+    if (grantDbUser) {
+      if (dbHost == 'localhost') {
+        execSync(`sudo mysql -e "grant all privileges on ${dbName}.* to '${dbUsername}'@'localhost';"`);
+        execSync('sudo mysql -e "flush privileges;"');
+      } else {
+        execSync(`sudo mysql -h${dbHost} -p'${dbHostPassword}' -e "grant all privileges on ${dbName}.* to '${dbUsername}'@'%';"`);
+        execSync(`sudo mysql -h${dbHost} -p'${dbHostPassword}' -e "flush privileges;"`);
+      }
+    }
+    console.log(colors.green('User/DB setup is complete.'));
+    const answers = await inquirer.prompt([
+      {
+        type: 'input',
+        name: 'wikiName',
+        message: 'the name of wiki',
+      },
+      {
+        type: 'input',
+        name: 'wikiDomain',
+        message: 'Wiki server domain name (e.g., www.wiki.com)',
+        default: 'localhost',
+      },
+      {
+        type: 'input',
+        name: 'apiPort',
+        message: 'Port of the *internal* api server',
+        default: '3001',
+      },
+      {
+        type: 'input',
+        name: 'viewPort',
+        message: 'Port of the *internal* view server',
+        default: '3000',
+      },
+      {
+        type: 'input',
+        name: 'adminUsername',
+        message: 'Wiki admin username',
+      },
+      {
+        type: 'password',
+        name: 'adminPassword',
+        message: 'Wiki admin password',
+      },
+      {
+        type: 'input',
+        name: 'frontPageName',
+        message: 'Wiki front page',
+      },
+    ]);
+    const secret = (await randomBytesAsync(48))
+      .toString('base64')
+      .replace(/\+/g, '-')
+      .replace(/\//g, '_')
+      .replace(/=/g, '');
+    const config = {
+      production: {
+        secret,
+        db: {
+          username: dbUsername,
+          password: dbPassword,
+          database: dbName,
+          host: dbHost,
+          port: '3306',
+          dialect: 'mysql',
+          charset: 'utf8mb4',
+          collate: 'utf8mb4_bin',
+          pool: { max: 40, min: 0, idle: 10000 },
+        },
+        mediaFileStorage: {
+          type: 'local',
+        },
+      },
+      development: {
+        secret,
+        db: {
+          username: dbUsername,
+          password: dbPassword,
+          database: dbName,
+          host: dbHost,
+          port: '3306',
+          dialect: 'mysql',
+          charset: 'utf8mb4',
+          collate: 'utf8mb4_bin',
+          pool: { max: 40, min: 0, idle: 10000 },
+        },
+        mediaFileStorage: {
+          type: 'local',
+        },
+      },
+    };
+    const configJSON = JSON.stringify(config, null, 2);
+    writeFileSync(configPath, configJSON);
+    const models = require('../lib/models');
+    await models.install({
+      wikiName: answers.wikiName,
+      domain: answers.wikiDomain,
+      adminUsername: answers.adminUsername,
+      adminPassword: answers.adminPassword,
+      frontPageName: answers.frontPageName,
+    });
+    await models.sequelize.query(`
+      ALTER TABLE articleSearch
+      DROP INDEX article_search_content,
+      ADD FULLTEXT INDEX article_search_content (content ASC)  COMMENT 'tokenizer "TokenBigramIgnoreBlankSplitSymbolAlphaDigit"'
+    `);
+    await models.sequelize.query('DROP TABLE IF EXISTS SequelizeMeta');
+    await models.sequelize.query(`
+      CREATE TABLE SequelizeMeta (
+        name varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+        PRIMARY KEY (name),
+        UNIQUE KEY name (name),
+        UNIQUE KEY SequelizeMeta_name_unique (name)
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
+    `);
+    const migrations = readdirSync(path.join(__dirname, '..', 'db-migrations'));
+    for (const migration of migrations) {
+      await models.sequelize.query(`
+        INSERT INTO SequelizeMeta (name) VALUES (${models.sequelize.escape(migration)})
+      `);
+    }
+
+    await models.initialize();
+    readdirSync(path.join(__dirname, '..', 'media'))
+      .filter(file => (file.indexOf('.') !== 0) && (!['removed', 'temp', '.gitkeep'].includes(file)))
+      .forEach((file) => {
+        renameSync(path.join(mediaFilePath, file), path.join(mediaFilePath, 'removed', file));
+      });
+    readdirSync(path.join(__dirname, '..', 'media', 'temp'))
+      .filter(file => (file.indexOf('.') !== 0) && (!['.gitkeep'].includes(file)))
+      .forEach((file) => {
+        unlinkSync(path.join(mediaFilePath, 'temp', file));
+      });
+    const ecosystemTemplate = readFileSync(path.join(__dirname, 'install-templates', 'ecosystem.config.js.template'), 'utf8');
+    const ecosystemConfig = ecosystemTemplate
+      .replace(/\{\{api_port\}\}/g, answers.apiPort)
+      .replace(/\{\{view_port\}\}/g, answers.viewPort);
+    writeFileSync(path.join(rootPath, 'ecosystem.config.js'), ecosystemConfig);
+    const nginxTemplate = readFileSync(path.join(__dirname, 'install-templates', 'nginx.template'), 'utf8');
+    const nginxConfig = nginxTemplate
+      .replace(/\{\{server_name\}\}/g, answers.wikiDomain)
+      .replace(/\{\{root_path\}\}/g, path.join(__dirname, '..'))
+      .replace(/\{\{api_port\}\}/g, answers.apiPort)
+      .replace(/\{\{view_port\}\}/g, answers.viewPort);
+    const tempPath = path.join(__dirname, answers.wikiDomain);
+    if (existsSync(tempPath)) unlinkSync(tempPath);
+    writeFileSync(tempPath, nginxConfig);
+    const { nginxMoveCopy } = await inquirer.prompt([
+      {
+        type: 'confirm',
+        name: 'nginxMoveCopy',
+        message: `Nginx config has been created on ${tempPath}.
+Do you want to move this to the /etc/nginx/sites-available and /etc/nginx/sites-enabled ? (sudo)`,
+        default: true,
+      },
+    ]);
+    if (nginxMoveCopy) {
+      execSync(`sudo rm -f /etc/nginx/sites-available/${answers.wikiDomain} && sudo rm -f /etc/nginx/sites-enabled/${answers.wikiDomain}`);
+      execSync(`sudo mv ${tempPath} /etc/nginx/sites-available && sudo ln -s /etc/nginx/sites-available/${answers.wikiDomain} /etc/nginx/sites-enabled/${answers.wikiDomain}`);
+      execSync('sudo service nginx reload');
+    }
+    console.log(colors.green('done'));
+    process.exit(0);
+  } catch (err) {
+    console.error(err);
+    process.exit(1);
+  }
+})();
