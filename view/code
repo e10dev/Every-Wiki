@@ -19,7 +19,7 @@ default.vue -
 error.vue - 에러 발생
 
 <pages-admin>
-extensionName.vue - 
+extensionName.vue - (관리자 페이지) 확장기능
 email.vue - (관리자 페이지) 이메일 설정
 general.vue - (관리자 페이지) 일반 설정
 grant.vue - (관리자 페이지) 사용자 역할 부여/해제
