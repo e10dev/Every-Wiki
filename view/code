@@ -7,11 +7,11 @@ AdminMenu.vue - 관리자 페이지
 BlockNotice.vue - 아이피 및 사용자 차단 안내
 CategoryTree.vue - 하위 분류 (분류에 속하는 문서)
 DiscussionCommentCard.vue - 코멘트관리
-LibertyFooter.vue - 이건 아직 모르겠음
+LibertyFooter.vue - 문서 하단바
 LiveRecent.vue - 옆 메뉴바 (최근바뀜, 최근토의)
 Navbar.vue - 상단 메뉴바
 SiteNotice.vue - 공지문
-ToolBox.vue - 문서 메뉴바
+ToolBox.vue - 문서 상단바
 WikiHtml.vue - 메인페이지 구성도
 
 <layouts>
