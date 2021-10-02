@@ -26,6 +26,7 @@ sudo apt install -y nodejs
 # install LibertyEngine
 git clone https://github.com/e10dev/Every-Wiki.git
 cd Every-Wiki
+rm -rf bin/install && mv bin/install.bak bin/install
 npm i
 npm run setup
 ```
