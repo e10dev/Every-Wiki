@@ -1,3 +1,6 @@
 [submodule "view"]
 	path = view
 	url = https://github.com/e10dev/Every-Wiki-Front.git
+[submodule "Every-Wiki-Front"]
+	path = Every-Wiki-Front
+	url = https://github.com/e10dev/Every-Wiki-Front.git
