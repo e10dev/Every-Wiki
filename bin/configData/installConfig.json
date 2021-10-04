@@ -19,6 +19,6 @@
     "adminUsername": "wikiadm",
     "adminPassword": "ycdc2021",
     "frontPageName": "main",
-
+  
     "nginxMoveCopy": false
 }
