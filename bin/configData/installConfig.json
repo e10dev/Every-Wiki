@@ -1,14 +1,16 @@
 {
-    "createDbUser": true, 
-    "createDatabase": true, 
-    "grantDbUser": true, 
+    "createDbUser": false, 
+    "createDatabase": false, 
+    "grantDbUser": false, 
 
-    "dbHost": "svc-db", 
+    "dbHost": "localhost", 
     "dbHostUserName": "root", 
     "dbHostPassword": "ycdc2021", 
-    "dbName": "EveryDB", 
-    "dbUserName": "EveryDBadm", 
+    "dbName": "wikidb", 
+    "dbUserName": "wikiuser", 
     "dbPassword": "ycdc2021",
+
+    "dbSetupInit": false,
 
     "wikiName": "Every Wiki",
     "wikiDomain": "localhost",
@@ -18,5 +20,5 @@
     "adminPassword": "ycdc2021",
     "frontPageName": "main",
 
-    "nginxMoveCopy": true
+    "nginxMoveCopy": false
 }
