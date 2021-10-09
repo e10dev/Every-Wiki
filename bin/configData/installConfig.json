@@ -1,0 +1,22 @@
+{
+    "createDbUser": true, 
+    "createDatabase": true, 
+    "grantDbUser": true, 
+
+    "dbHost": "localhost", 
+    "dbHostUserName": "root", 
+    "dbHostPassword": "ycdc2021", 
+    "dbName": "wikidb", 
+    "dbUserName": "wikiuser", 
+    "dbPassword": "ycdc2021",
+
+    "dbSetupInit": true,
+
+    "wikiName": "Every Wiki",
+    "wikiDomain": "localhost",
+    "apiPort": "3001",
+    "viewPort": "3000",
+    "adminUsername": "wikiadm",
+    "adminPassword": "ycdc2021",
+    "frontPageName": "main"
+}

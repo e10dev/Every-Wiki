@@ -1,0 +1,25 @@
+#!/usr/bin/env node
+
+'use strict';
+
+const path = require('path');
+
+global.LIBERTY_VERSION = require('../package.json').version;
+
+process.chdir(path.join(__dirname, '..')); // root dir
+
+const models = require('../lib/models');
+
+(async () => {
+  try {
+    await models.initialize();
+    const key = process.argv[2];
+    const val = JSON.parse(process.argv[3]);
+    await models.Setting.set(key, val);
+    console.log(`done. ${key} = ${val}`);
+    process.exit(0);
+  } catch (err) {
+    console.error(err);
+    process.exit(1);
+  }
+})();
