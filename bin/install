@@ -41,22 +41,22 @@ const colors = require('colors/safe');
 
     if (createDatabase) {
       if (dbHost == 'localhost') {
-        execSync(`sudo mysql -e "create database if not exists ${dbName};"`);
+        execSync(`sudo mysql -u${dbHostUserName} -p'${dbHostPassword}' -e "create database if not exists ${dbName};"`);
       } else {
         execSync(`sudo mysql -h${dbHost} -u${dbHostUserName} -p'${dbHostPassword}' -e "create database if not exists ${dbName};"`);
       } 
     }
     if (createDbUser) {
       if (dbHost == 'localhost') {
-        execSync(`sudo mysql -e "create user if not exists '${dbUserName}'@'localhost' identified by '${dbPassword}';"`);
+        execSync(`sudo mysql -u${dbHostUserName} -p'${dbHostPassword}' -e "create user if not exists '${dbUserName}'@'localhost' identified by '${dbPassword}';"`);
       } else {
         execSync(`sudo mysql -h${dbHost} -u${dbHostUserName} -p'${dbHostPassword}' -e "create user if not exists'${dbUserName}'@'%' identified by '${dbPassword}';"`);
       }
     }
     if (grantDbUser) {
       if (dbHost == 'localhost') {
-        execSync(`sudo mysql -e "grant all privileges on ${dbName}.* to '${dbUserName}'@'localhost';"`);
-        execSync('sudo mysql -e "flush privileges;"');
+        execSync(`sudo mysql -u${dbHostUserName} -p'${dbHostPassword}' -e "grant all privileges on ${dbName}.* to '${dbUserName}'@'localhost';"`);
+        execSync(`sudo mysql -u${dbHostUserName} -p'${dbHostPassword}' -e "flush privileges;"`);
       } else {
         execSync(`sudo mysql -h${dbHost} -u${dbHostUserName} -p'${dbHostPassword}' -e "grant all privileges on ${dbName}.* to '${dbUserName}'@'%';"`);
         execSync(`sudo mysql -h${dbHost} -u${dbHostUserName} -p'${dbHostPassword}' -e "flush privileges;"`);

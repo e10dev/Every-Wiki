@@ -10,7 +10,7 @@
     "dbUserName": "wikiuser", 
     "dbPassword": "ycdc2021",
 
-    "dbSetupInit": true,
+    "firstTimeSetup": true,
 
     "wikiName": "Every Wiki",
     "wikiDomain": "localhost",
