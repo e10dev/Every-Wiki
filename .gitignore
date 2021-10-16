@@ -43,6 +43,9 @@ npm-debug.log
 
 /ecosystem.config.js
 
+/views/*
+!/views/.gitkeep
+
 package-lock.json
 
 /bin/localhost
