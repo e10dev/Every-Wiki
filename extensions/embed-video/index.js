@@ -4,7 +4,7 @@ function youtubeHook($item) {
   const id = $item.text();
   const width = Number($item.attr('width')) || 560;
   const height = Number($item.attr('height')) || 315;
-  return `<iframe class="embed-video embed-video-youtube" src="//www.youtube-nocookie.com/embed/${id}" width="${width}" height="${height}"> </iframe>`;
+  return `<iframe class="embed-video embed-video-youtube" src="//www.youtube-nocookie.com/embed/${id}" style="width:${width}px; height:${height}px;"> </iframe>`;
 }
 
 function kakaotvHook($item) {
