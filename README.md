@@ -56,26 +56,41 @@ spec:
         app: main-label
     spec:
       securityContext:
-        runAsUser: 1001
-        runAsGroup: 1001
-        fsGroup: 1001
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
       nodeName: wiki-worker2
       containers:
       - name: main-container
-        image: e10docker/mainweb:0.3
-        imagePullPolicy: Always
+        image: e10docker/mainweb:0.5
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 80
           protocol: TCP
-        command: ["/bin/sh", "-c", "sudo service nginx start && npm run kubetest"]
         volumeMounts:
         - name: mainweb-init
-          mountPath: /home/ubuntu/Every-Wiki/bin/configData/
+          mountPath: /home/ubuntu/Every-Wiki/bin/configData
+        - name: mainweb-media-data
+          mountPath: /home/ubuntu/Every-Wiki/media
+        - name: mainweb-db-data
+          mountPath: /var/lib/mysql
       volumes:
       - name: mainweb-init
         configMap:
           name: mainweb-init-config
----
+      - name: mainweb-media-data
+        persistentVolumeClaim:
+          claimName: web-media-data-pvc
+      - name: mainweb-db-data
+        persistentVolumeClaim:
+          claimName: web-db-data-pvc
+
+
+```
+
+### configmap.yaml
+```yaml
+# kubectl apply -f configMap.yaml
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -87,12 +102,14 @@ data:
       "createDatabase": true, 
       "grantDbUser": true, 
 
-      "dbHost": "svc-db", 
+      "dbHost": "localhost", 
       "dbHostUserName": "root", 
       "dbHostPassword": "ycdc2021", 
-      "dbName": "EveryDB1", 
+      "dbName": "EveryDB", 
       "dbUserName": "EveryDBadm", 
       "dbPassword": "ycdc2021",
+
+      "firstTimeSetup": false,
 
       "wikiName": "Every Wiki",
       "wikiDomain": "localhost",
@@ -100,58 +117,10 @@ data:
       "viewPort": "3000",
       "adminUsername": "wikiadm",
       "adminPassword": "ycdc2021",
-      "frontPageName": "main",
-
-      "nginxMoveCopy": true
+      "frontPageName": "main"
     }
 ```
-### db.yaml
-```yaml
-# kubectl apply -f db.yaml
 
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: deployment-db
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: db-label
-  template:
-    metadata:
-      name: deployment-mariadb
-      labels:
-        app: db-label
-    spec:
-      containers:
-      - name: db-container
-        image: e10docker/maindb:0.1
-        ports:
-        - containerPort: 3306
-          protocol: TCP
-        env:
-        - name: MYSQL_ROOT_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: mariadb-password
-              key: password
-        volumeMounts:
-        - name: mysql-initdb
-          mountPath: /docker-entrypoint-initdb.d
-      volumes:
-      - name: mysql-initdb
-        configMap:
-          name: mysql-initdb-config
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: mysql-initdb-config
-data:
-  initdb.sql: |
-    INSTALL SONAME 'ha_mroonga';
-```
 ### secret.yaml
 ```yaml
 # kubectl apply -f secret.yaml
@@ -167,14 +136,13 @@ type: Opaque
   
 <br/>
   
-## Run & Dev
+## Run & Upgrade
   
 ### Run
 ```bash
-npm start
+kubectl exec {pod} -- npm start
 ```
-### Dev
+### Upgrade
 ```bash
-npm run dev  # run api server on dev mode
-cd view/ && npm run dev  # run web on dev mode
+kubectl exec {pod} -- npm run upgrade
 ```
