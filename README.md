@@ -6,9 +6,9 @@ Develop with [LibertyEngine](https://github.com/librewiki/liberty-engine).
 ## Table of Contents
 - [Requirements](#requirements)
 - [Build](#build)
-- [nginx Settings](#nginxsettings)
+- [nginx Settings](#nginx-settings)
 - [Run](#run)
-  * [When Mroonga related error occurs](#whenmroongarelatederroroccurs)
+  * [When Mroonga related error occurs](#when-mroonga-related-error-occurs)
   
 <br/>
 
